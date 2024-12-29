@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAME</title>
+</head>
+
+<body id='main'>
+    <!-- ClickHub Product -->
+    <script>
+        //CLICKHUB ENGINE CLICKHUB ENGINE CLICKHUB ENGINE
+        // VERSION 2.0
+        main = document.getElementById('main');
+
+        utils = {
+            toHex: (n) => {
+                var hex = n.toString(16);
+                return hex.length == 1 ? "0" + hex : hex
+            },
+            rgb: (r, g, b) => "#" + utils.toHex(r) + utils.toHex(g) + utils.toHex(b),
+            hex: (color) => color[0] != "#" ? "#" + color : color,
+
+            random: (min, max) => Math.floor(Math.random() * (max - min + 1) + min),
+        }
+
+        page = {
+            setBackgroundColor: color => {
+                document.body.style.backgroundColor = color;
+            },
+            setTitle: text => {
+                document.title = text
+            }
+        }
+
+        var engine = {};
+
+        engine.advanced = {
+            getElement: id => {
+                return document.getElementById(id);
+            },
+
+            createElement: (type, text = null) => {
+                const element = document.createElement(type);
+
+                element.innerHTML = text;
+                main.appendChild(element);
+
+                return element;
+            },
+
+            appendButtonFunctionality: (element) => {
+                var button = element;
+                button.setBackground = function(color) {
+                    this.element.style.background = color;
+                };
+                button.onClick = function(func) {
+                    this.element.onclick = func;
+                };
+                
+                return button;
+            }
+        }
+
+        engine.space = amount => {
+            divSpace = document.createElement('div');
+
+            for (let i = 0; i < amount; i++) {
+                divSpace.appendChild(document.createElement('br'))
+            }
+
+            main.appendChild(divSpace);
+            return divSpace;
+        }
+
+        engine.createDefault = (type, text) => {
+            buttonElement = engine.advanced.createElement(type, text);
+
+            outputDefault = {
+                element: buttonElement
+            };
+
+            outputDefault.setColor = function(color) {
+                this.element.style.color = color;
+            };
+            outputDefault.setText = function(text) {
+                this.element.innerHTML = text;
+            };
+            outputDefault.moveBefore = function(beforeElement) {
+                this.element.before(beforeElement.element);
+            };
+
+            return outputDefault;
+        };
+
+        engine.createButton = text => {
+            outputButton = engine.createDefault("button", text);
+            outputButton = engine.advanced.appendButtonFunctionality(outputButton);
+            
+            return outputButton;
+        };
+
+        engine.createHeader = text => {
+            outputHeader = engine.createDefault("h1", text);
+            return outputHeader;
+        };
+
+        engine.createText = (text, type="p") => {
+            outputText = engine.createDefault(type, text);
+            return outputText;
+        };
+
+        engine.createInput = {
+            default: type => {
+                inputDefault = engine.createDefault("input");
+                inputDefault.element.type = type;
+
+                return inputDefault;
+            },
+
+            text: () => {
+                inputText = engine.createInput.default("text");
+
+                inputText.getValue = function() {
+                    return this.element.value
+                }
+                inputText.setValue = function (value) {
+                    this.element.value = value;
+                    return value;
+                }
+
+                return inputText
+            },
+            button: text => {
+                inputButton = engine.createInput.default("button");
+                inputButton.element.value = text;
+
+                engine.advanced.appendButtonFunctionality(inputButton);
+
+                return inputButton;
+            },
+        }
+    </script>
+
+    <div><h6, id="credit">ClickHub:829765183353913405</h6></div>
+    <script>
+        page.setTitle("Калькулятор Шаурмы");
+        page.setBackgroundColor(utils.rgb(133, 98, 53));
+
+        engine.createHeader("Калькулятор Шаурмы");
+
+        var ingredients = [];
+        var mainText = engine.createText("Добавляй ингредиенты в свою шаурму, чтобы набрать максимально положительные отзывы!");
+
+        var input = engine.createInput.text();
+        var inputButton = engine.createInput.button("Добавить")
+
+        inputButton.onClick(() => {
+            input.getValue().split(", ").forEach(element => {
+                newElement = element.toLowerCase();
+                if ((!ingredients.includes(newElement)) && newElement.length > 1 && ingredients.length <= 13) {
+                    ingredients.push(newElement);
+                }
+            });
+
+            if (ingredients.length > 0) {
+                input.setValue("");
+                mainText.setText(`Ингредиенты: ${ingredients.join(', ')}`);
+            }
+        });
+
+        engine.space(1);
+        var reviewButton = engine.createButton("Собрать отзывы");
+        engine.createText("Проект запросил: MaxFun");
+
+        reviewButton.onClick(() => {
+            if (ingredients.length == 0) return;
+            review = [];
+
+            fillings = [
+                "Шаверма пиздец пустая, ничего сука вообще нет!",
+                "А где начинки? Блять, их тупо нет!",
+                "Недостаточно наполнения, я даже не почуствовал!",
+                "Мне не хватило начинок. Их мало!",
+                "Количество начинок хорошее, но возможно стоило добавить больше.",
+                "Отлично наполнили, хотя возможно чего-то не хватило.",
+                "Наполнена идеально. Всего достаточно, не много и не мало.",
+                "Замечательно наполнена, хотя возможно стоило немного меньше.",
+                "Начинок много, немного перебрали с количеством..",
+                "Куда столько начинки, не знаю.",
+                "Я тупо не смог съесть, слижком много всего.",
+                "Я обожрался от наполнения.",
+                "Блять, автор нахуй накинул начинок пиздец ёбаный рот."
+            ];
+            review.push(fillings[ingredients.length - 1]);
+
+            consists = [
+                "Пизда, что вы мне вообще впарили по косистенции, она ужасна!",
+                "Что с консистенцией, повар умер?",
+                "Очень плохая консистенция.",
+                "Средняя консистенция.",
+                "В целом, отличная консистенция!",
+                "Хорошая консистенция.",
+                "Немного размытый правда, ну это ничего.",
+                "Какая-то бурда если честно.",
+                "Хуйня а не консистенция.",
+                "БЛЯТЬ ОН ЖИДКИЙ БЫЛ! ЭТО ПИЗДЕЦ!"
+            ];
+            review.push(consists[Math.round(averageArrayLength(ingredients))]);
+
+            lengths = [
+                [" - начинка замечательно подошла к шаурме.", " - великолепная начинка", " - просто слов нет, как же хорош!"],
+                [" - достаточно хорошо сочетается с другими ингредиентами.", " - отличная начинка.", " - волшебно подходит общей композиции."],
+                [" - нормально подошло.", " играет роль заполнения и не несёт в себе много ценности."],
+                [" стоило убрать из шаурмы, ничего не добавляет.", " - бесполезная начинка.", " ниже среднего по качеству."],
+                [" портит вкус своим присутствием."],
+                [" говнище, ужасно для шаурмы."],
+                [" нахуй вообще добавили????"],
+            ]
+            ingredients.forEach(i => {
+                word = i[0].toUpperCase() + i.slice(1);
+
+                let close = howClose(i.length, 5);
+
+                if (close >= lengths.length) close = lengths.length-1;
+
+                let arr = lengths[close];
+                review.push(word + arr[utils.random(0, arr.length-1)])
+            });
+
+            review = shuffleArray(review);
+
+            starts = [
+                "Короче, рассказываю.",
+                "Попробовал шаверму, вот что думаю:",
+                "Значит так:",
+                "Говорю по факту.",
+                "Делюсь с вами пробой.",
+                "Неплохо, неплохо.",
+                "Что по шаверме?",
+                "Хз, хз.",
+                "Вердикт таков:",
+                "Мой обзор на шаурму:"
+            ];
+            review.unshift(starts[utils.random(0, starts.length - 1)]);
+
+            mainText.setText("Отзыв критика: "+ review.join(' '));
+            ingredients = []
+        })
+
+        function howClose(value, bestValue) {
+            return Math.abs(bestValue - value)
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+
+            return array
+        }
+
+        function averageArrayLength(array) {
+            amount = array.length;
+            sum = 0;
+
+            array.forEach(element => {
+                sum += element.length
+            });
+
+            return sum/amount;
+        }
+
+    </script>
+
+    <style>
+        body {
+            background-color: #373737;
+            font-family: Verdana, sans-serif;
+            justify-content:flex-end;
+        }
+
+        button {
+            border-style: none;
+            border-radius: 7px;
+            font-size: medium;
+            padding: 10px;
+            font-family: Verdana, sans-serif;
+            background-color: rgb(255, 255, 255);
+        }
+
+        p,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif
+        }
+
+        #credit {
+            font-size: small;
+            color: white;
+            opacity: 0.2;
+        }
+
+        textarea {
+            font-family: Verdana, sans-serif;
+            padding-top: 10px;
+            outline: none;
+            resize: vertical;
+            overflow: auto;
+            border-radius: 7px;
+        }
+
+        input {
+            font-family: Verdana, sans-serif;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            text-align: center;
+            border-style: none;
+            border-radius: 7px;
+        }
+    </style>
+</body>
+<!-- ClickHub Product -->
+</html>
